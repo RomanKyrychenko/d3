@@ -55,7 +55,7 @@ var nation = crossfilter(),
   populations = population.group();
 
 queue()
-    .defer(d3.json, "counties.json")
+    .defer(d3.json, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/counties.json")
     .defer(d3.tsv, "county_growth.tsv", function(d) {
 
       for(var propertyName in d) {
