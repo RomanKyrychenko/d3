@@ -56,7 +56,7 @@ var nation = crossfilter(),
 
 queue()
     .defer(d3.json, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/counties.json")
-    .defer(d3.tsv, "county_growth.tsv", function(d) {
+    .defer(d3.tsv, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/county_growth.tsv", function(d) {
 
       for(var propertyName in d) {
         if (propertyName == "Area") {
