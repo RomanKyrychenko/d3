@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Perth & Kinross Index of Multiple Deprivation 2012</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="d3-tip.js"></script>
+    <script src="colorbrewer.js" type="text/javascript"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <style>
+
+        @import url(http://fonts.googleapis.com/css?family=Oxygen:400,400italic,700);
+
+        .S12000046_geo {
+            fill: none;
+            stroke: #cfcfcf;
+        }
+
+        .d3-tip {
+            line-height: 1.5;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            border-radius: 4px;;
+        }
+
+        .toolTipHead {
+            font-size: 14px;
+        }
+
+        .toolTipRank {
+            font-size: 16px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .legendTitle {
+            font-family: "Oxygen";
+            font-size: 16px;
+            color: #666;
+            margin-left: -5px;
+        }
+
+        #legend {
+            width: 500px;
+            position: absolute;
+            left: 30px;
+            top: 425px;
+        }
+
+        li.key {
+            float: left;
+            border-top-width: 15px;
+            border-top-style: solid;
+            font-family: "Oxygen";
+            color: #666;
+            font-size: 16px;
+            width: 10%;
+            padding-left: 0;
+            padding-right: 0;
+            list-style:none;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="btn-group pull-right">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            Select SIMD Domain <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a class="m" value="rateByOverall" href="#">Overall</a></li>
+            <li><a class="m" value="rateByIncome" href="#">Income</a></li>
+            <li><a class="m" value="rateByEmployment" href="#">Employment</a></li>
+            <li><a class="m" value="rateByHealth" href="#">Health</a></li>
+            <li><a class="m" value="rateByEducation" href="#">Education</a></li>
+            <li><a class="m" value="rateByHousing" href="#">Housing</a></li>
+            <li><a class="m" value="rateByCrime" href="#">Crime</a></li>
+        </ul>
+    </div>
+    
+    <script>
+        var width = 960,
+            height = 580,
+            centered;
+
+        var projection = d3.geo.albers()
+            .center([0.22, 56.40])
+            .rotate([4.4, 0])
+            .parallels([50, 60])
+            .scale(1200 * 25)
+            .translate([width / 2, height / 2]);
+
+        var path = d3.geo.path()
+            .projection(projection);
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g");
+
+        var rateByOverall = {};
+        var rateByIncome = {};
+        var rateByEmployment = {};
+        var rateByHealth = {};
+        var rateByEducation = {};
+        var rateByHousing = {};
+        var rateByCrime = {};
+
+        // wrapper function to enable switching map and legend content
+        function updateChoro(choro) {
+
+            // function to read in data from csv file
+            d3.csv("S12000024_deprivation_ranks_2012.csv", function(error, data) {
+
+                // set the colour scale of the choropleth map
+                var cscale,
+                    domain;
+
+                if (choro == "rateByOverall") {
+                    choro = rateByOverall;
+                    cscale = colorbrewer.YlGnBu[9]
+                    domain = 'Overall '
+                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
+                }
+                if (choro == "rateByIncome") {
+                    choro = rateByIncome;
+                    cscale = colorbrewer.Oranges[9]
+                    domain = 'Income '
+                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
+                }
+                if (choro == "rateByEmployment") {
+                    choro = rateByEmployment;
+                    cscale = colorbrewer.Reds[9]
+                    domain = 'Employment '
+                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
+                }
+                if (choro == "rateByHealth") {
+                    choro = rateByHealth;
+                    cscale = colorbrewer.Greens[9]
+                    domain = 'Health '
+                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
+                }
+                if (choro == "rateByEducation") {
+                    choro = rateByEducation;
+                    cscale = colorbrewer.Purples[9]
+                    domain = 'Education '
+                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
+                }
+                if (choro == "rateByHousing") {
+                    choro = rateByHousing;
+                    cscale = colorbrewer.Blues[9]
+                    domain = 'Housing '
+                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
+                }
+                if (choro == "rateByCrime") {
+                    choro = rateByCrime;
+                    cscale = colorbrewer.Reds[9]
+                    domain = 'Crime '
+                    document.getElementById("legend").innerHTML = "<span class = legendTitle>" + domain + "deprivation</span>";
+                }
+
+                var color = d3.scale.quantize()
+                    .domain([6500, 1])
+                    .range(cscale);
+
+                data.forEach(function (d) {
+                    rateByOverall[d.dz_label] = +d.overall_rank;
+                    rateByIncome[d.dz_label] = +d.income_deprivation_rank;
+                    rateByEmployment[d.dz_label] = +d.employment_deprivation_rank;
+                    rateByHealth[d.dz_label] = +d.health_deprivation_rank;
+                    rateByEducation[d.dz_label] = +d.education_deprivation_rank;
+                    rateByHousing[d.dz_label] = +d.housing_deprivation_rank;
+                    rateByCrime[d.dz_label] = +d.crime_deprivation_rank;
+                });
+
+                // function to read in data from json file
+                d3.json("S12000024_topo.json", function(error, S12000024_topo) {
+
+                    // build the tool tip information boxes
+                    var tip = d3.tip()
+                        .attr('class', 'd3-tip')
+                        .offset([0, -1])
+                        .direction('w')
+                        .html(function (d) {
+
+                            if (choro == rateByOverall) {
+                                var t = d.properties.overall_rank;
+                            }
+                            if (choro == rateByIncome) {
+                                var t = d.properties.income_rank;
+                            }
+                            if (choro == rateByEmployment) {
+                                var t = d.properties.employment_rank;
+                            }
+                            if (choro == rateByHealth) {
+                                var t = d.properties.health_rank;
+                            }
+                            if (choro == rateByEducation) {
+                                var t = d.properties.education_rank;
+                            }
+                            if (choro == rateByHousing) {
+                                var t = d.properties.housing_rank;
+                            }
+                            if (choro == rateByCrime) {
+                                var t = d.properties.crime_rank;
+                            }
+
+                            return "<span class ='toolTipHead'><b>Data Zone: " + d.id + "</b><br/>" +
+                            "Intermediate Geography: " + d.properties.int_geog + "<br/>" +
+                            "SIMD Year: 2012<br/>" +
+                            "<span class ='toolTipRank'>" + domain + "SIMD Rank: " + t + "</span><br/>"
+                        })
+
+                    svg.call(tip);
+    
+                    d3.select("g")
+                        .selectAll("path")
+                        .remove();
+    
+                    // build the choropleth map
+                    var appending = svg.selectAll("g")
+                        .attr("class", "S12000024_geo")
+                        .data(topojson.feature(S12000024_topo, S12000024_topo.objects.S12000024_geo).features);
+    
+                        // add new elements
+                        appending.enter().append("path");
+    
+                        // update existing elements
+                        appending.style("fill",
+                        function (d) {
+                            return color(choro[d.id]);
+                        })
+                        .style("stroke", "white")
+                        .style("stroke-width", 0.1)
+                        .attr("d", path)
+                        .on("click", clicked)
+    
+                        // rollover functionality to display tool tips
+                        .on("mouseover", function (d) {
+                            tip.show(d)
+                            d3.select(this)
+                                .transition().duration(200)
+                                .style("fill", "red");
+                        })
+                        .on("mouseout", function () {
+                            tip.hide()
+                            d3.select(this)
+                                .transition().duration(200)
+                                .style("fill",
+                                function (d) {
+                                    return color(choro[d.id]);
+                                });
+                        })
+    
+                    d3.select('#legend')
+                        .selectAll('ul')
+                        .remove();
+    
+                    // build the map legend
+                    var legend = d3.select('#legend')
+                        .append('ul')
+                        .attr('class', 'list-inline');
+    
+                    var keys = legend.selectAll('li.key')
+                        .data(color.range());
+
+                    var legend_items = ["Low", "", "", "", "", "", "", "", "High"];
+    
+                    keys.enter().append('li')
+                        .attr('class', 'key')
+                        .style('border-top-color', String)
+                        .text(function (d, i) {
+                            return legend_items[i];
+                        });
+                })
+            })
+        }
+
+        // zoom functionality written by the awesome Mike Bostock
+        function clicked(d) {
+            var x, y, k;
+    
+            if (d && centered !== d) {
+                var centroid = path.centroid(d);
+                x = centroid[0];
+                y = centroid[1];
+                k = 4;
+                centered = d;
+            } else {
+                x = width / 2;
+                y = height / 2;
+                k = 1;
+                centered = null;
+            }
+    
+            svg.selectAll("path")
+                .classed("active", centered && function(d) { return d === centered; });
+    
+            svg.transition()
+                .duration(750)
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+                .style("stroke-width", 1.5 / k + "px");
+        }
+    
+        // generate initial map using overall deprivation rank data
+        updateChoro('rateByOverall');
+    
+        // handle on click event to switch between maps
+        d3.selectAll(".m")
+            .on("click", function() {
+                var choro = this.getAttribute("value");
+                updateChoro(choro);
+            });
+    
+    </script>
+    <div id="legend"></div>
+</body>
+</html>

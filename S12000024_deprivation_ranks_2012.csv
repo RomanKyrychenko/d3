@@ -1,0 +1,27 @@
+dz_label,int_geog,overall_rank,income_deprivation_rank,employment_deprivation_rank,health_deprivation_rank,education_deprivation_rank,access_deprivation_rank,housing_deprivation_rank,crime_deprivation_rank
+UA.CH,"Powmill, Cleish and Scotlandwell",4727,5022,5097,5534,6026,278,5458,6465
+UA.CV,"Powmill, Cleish and Scotlandwell",3743,4856,5222,4769,5640,438,4022,75
+UA.KR,"Powmill, Cleish and Scotlandwell",5417,6298,5675,5574,5628,555,6056,5661
+UA.DP,Kinross,3818,3769,3556,2582,3211,4436,3923,3545
+UA.DT,Kinross,3040,2878,2853,2251,2252,5761,3407,3728
+UA.IF,Kinross,5549,4752,5122,4541,4879,4247,6193,6044
+UA.KK,Kinross,6420,5594,5933,6324,6224,5772,6191,4007
+UA.KS,Kinross,5917,4744,5402,5732,5627,4469,5954,5352
+UA.KM,Milnathort and Crook of Devon,4839,5067,5024,6283,5724,388,4773,5475
+UA.KV,"Powmill, Cleish and Scotlandwell",5367,5942,5685,5866,5762,498,5753,6351
+UA.KC,Milnathort and Crook of Devon,4139,3790,4214,4109,3869,2157,3530,3415
+UA.KH,Milnathort and Crook of Devon,5061,4686,5953,5044,5538,738,4766,5927
+UA.LV,"Muthill, Greenloaning and Gleneagles",4972,5191,5103,4185,5193,1699,4828,2667
+UA.LH,Milnathort and Crook of Devon,5807,5693,5777,6102,6059,1501,6047,4259
+UA.MY,"Muthill, Greenloaning and Gleneagles",5396,5886,5651,6163,6281,525,6279,4632
+UA.OD,"Glenfarg, Dunning and Rhynd",5363,5669,6241,5948,5551,462,5781,5811
+UA.PL,"Muthill, Greenloaning and Gleneagles",5323,6115,6460,6186,5449,353,4645,4184
+UA.RV,"Glenfarg, Dunning and Rhynd",4018,4950,5033,4316,4502,155,3776,5488
+UA.SC,"Muthill, Greenloaning and Gleneagles",5029,5236,5271,5558,4568,930,4952,4872
+UA.SM,Auchterarder,3057,2453,3206,2082,3213,5145,1837,3704
+UA.TP,Auchterarder,6325,6275,5850,5509,6214,3156,6235,5759
+UA.ZK,Auchterarder,5906,5479,5378,4393,5288,6147,5596,3414
+UA.VI,Auchterarder,4579,3197,4935,3031,4870,5330,4111,4362
+UA.VO,Auchterarder,5058,4502,4987,4594,4942,2702,3916,4075
+UA.ZP,"Glenfarg, Dunning and Rhynd",4079,4504,4564,4288,4999,349,3505,5733
+UA.ZT,Bridge of Earn and Abernethy,4680,5233,5234,4923,4920,392,5176,5566
