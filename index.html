@@ -1,325 +1,719 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>Perth & Kinross Index of Multiple Deprivation 2012</title>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="d3-tip.js"></script>
-    <script src="colorbrewer.js" type="text/javascript"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Зарплати</title>  
+    <style type="text/css">
+	@media only screen and (min-device-width: 500px){
+	  .Products{display:block;visibility: visible;}
+	  .Products-Mobile{display:none;visibility: hidden;}
+	}
 
-    <style>
+	@media only screen and (max-device-width: 500px){
 
-        @import url(http://fonts.googleapis.com/css?family=Oxygen:400,400italic,700);
+	.Products{display:none;visibility: hidden;}
+	.Products-Mobile{display:block;visibility: visible;}
 
-        .S12000046_geo {
-            fill: none;
-            stroke: #cfcfcf;
-        }
+	}
 
-        .d3-tip {
-            line-height: 1.5;
-            padding: 5px;
-            background: rgba(0, 0, 0, 0.85);
-            color: white;
-            border-radius: 4px;;
-        }
+	html,
+	body {
+	  font-size: 100%;
+	      left: 15%;
+	}
 
-        .toolTipHead {
-            font-size: 14px;
-        }
+	body {
+	  background: #fff;
+	  color: #222;
+	  cursor: auto;
+	  font-family: "Helvetica Neue", Helvetica, PT Sans, PT Sans, sans-serif;
+	  font-style: normal;
+	  font-weight: normal;
+	  line-height: 1.5;
+	  margin: 0;
+	  padding: 0;
+	  position: relative;
+	}
+	a:hover {
+	  cursor: pointer;
+	}
 
-        .toolTipRank {
-            font-size: 16px;
-            font-weight: bold;
-            color: red;
-        }
 
-        .legendTitle {
-            font-family: "Oxygen";
-            font-size: 16px;
-            color: #666;
-            margin-left: -5px;
-        }
 
-        #legend {
-            width: 500px;
-            position: absolute;
-            left: 30px;
-            top: 425px;
-        }
+	.print-only,
+	.show-for-print {
+	  display: none !important;
+	}
 
-        li.key {
-            float: left;
-            border-top-width: 15px;
-            border-top-style: solid;
-            font-family: "Oxygen";
-            color: #666;
-            font-size: 16px;
-            width: 10%;
-            padding-left: 0;
-            padding-right: 0;
-            list-style:none;
-        }
+	/* line 20, ../scss/app.scss */
+	body {
+		width:85%;
+	  min-width: 85%;
+	}
 
-    </style>
+	h1 {
+	  font-family: "PT Sans", serif;
+	  font-weight: 700;
+	  color: #b1b5b4;
+	  font-size: 3.5rem;
+	}
 
-</head>
-<body>
-    <div class="btn-group pull-right">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-            Select SIMD Domain <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu">
-            <li><a class="m" value="rateByOverall" href="#">Overall</a></li>
-            <li><a class="m" value="rateByIncome" href="#">Income</a></li>
-            <li><a class="m" value="rateByEmployment" href="#">Employment</a></li>
-            <li><a class="m" value="rateByHealth" href="#">Health</a></li>
-            <li><a class="m" value="rateByEducation" href="#">Education</a></li>
-            <li><a class="m" value="rateByHousing" href="#">Housing</a></li>
-            <li><a class="m" value="rateByCrime" href="#">Crime</a></li>
-        </ul>
-    </div>
-    
+	h2 {
+	  font-family: "PT Sans", sans-serif;
+	  font-weight: 300;
+	  font-size: 1.3rem;
+	  color: #ea920e;
+	  padding-top: 5px;
+	}
+
+	/* line 36, ../scss/app.scss */
+	p {
+	  padding: 0;
+	  color: #52524e;
+	}
+
+
+	.axis path,
+	.axis line {
+	  fill: none;
+	  stroke: none;
+	  shape-rendering: crispEdges;
+	  stroke: #7F8281;
+	  stroke-width: 1px;
+	}
+
+	.axis text {
+	  font-family: "PT Sans", sans-serif;
+	  fill: #52524e;
+	  font-size: 11px;
+	}
+
+	/* line 124, ../scss/app.scss */
+	.usFocus,
+	.bar.usFocus,
+	.dots.usFocus {
+	  fill: #edc421;
+	}
+
+	.dots.usFocus.hoverFocus {
+	  fill: #0d6704;
+	}
+
+	circle.United_States.usFocus.dots {
+	  opacity: 1;
+	}
+
+	.bar.hoverFocus,
+	.dots.hoverFocus {
+	  fill: #0d6704;
+	  opacity: 1;
+	}
+
+	.Україна {
+	  fill: #edc421;
+	}
+
+	.name {
+	  fill: #ea920e;
+	}
+
+	.selected {
+	  color: white;
+	  border: none;
+	}
+
+	.states {
+	  stroke: #fff;
+	  stroke-width: 1px;
+	}
+
+	.states:hover {
+	  opacity: .6;
+	}
+
+	.legendLinear text {
+	  font-size: 9px;
+	  left:10%;
+	}
+	
+	.legendLinear {
+		left:10%;
+		top: 100px;
+	}
+	.line {
+	  fill: none;
+	  stroke-width: 1px;
+	  stroke-opacity: 70%;
+	}
+
+	.line.unfocused {
+	  stroke-opacity: 40%;
+	  stroke: #999999;
+	}
+
+	.line.focused {
+	  fill: none;
+	  stroke-width: 3px;
+	  stroke-opacity: 100%;
+	  stroke: #edc421;
+	}
+
+	.title {
+	  font-size: 20px;
+	  color: #0099ff;
+	}
+
+	.labels {
+	  font-family: sans-serif;
+	  font-size: 11px;
+	  fill: black;
+	}
+
+	.dots {
+	  fill: #b1b5b4;
+	  opacity: .6;
+	}
+
+	.tooltip1 {
+	  position: absolute;
+	  z-index: 10;
+	}
+
+	.tooltip1 p {
+	  background-color: rgba(255, 255, 255, 0.95);
+	  border: 2px #b1b5b4 solid;
+	  border-radius: 2px;
+	  color: #52524e;
+	  font-family: "PT Sans", sans-serif;
+	  font-size: 1rem;
+	  padding: 4px;
+	}
+
+	.tooltip2 {
+	  position: absolute;
+	  z-index: 10;
+	  background-color: rgba(255, 255, 255, 0.95);
+	  border: 2px #b1b5b4 solid;
+	  border-radius: 2px;
+	  color: #52524e;
+	  margin: 5px;
+	  padding: 5px;
+	  font-family: "PT Sans", sans-serif;
+	  font-size: 13px;
+	}
+
+	.tooltipText {
+	  color: #b1b5b4;
+	}
+
+	.d3-tip {
+	  line-height: 1;
+	  padding: 12px;
+	  background-color: rgba(255, 255, 255, 0.95);
+	  color: #52524e;
+	  border: 2px #b1b5b4 solid;
+	  border-radius: 2px;
+	}
+	.d3-tip: after {
+	  box-sizing: border-box;
+	  display: inline;
+	  font-family: "PT Sans", sans-serif;
+	  font-size: 13px;
+	  width: 100%;
+	  line-height: 1;
+	  content: "\25BC";
+	  position: absolute;
+	  text-align: center;
+	}
+
+	.column, .columns {
+	  padding: 0;
+	}
+
+	.panel {
+	  padding: 0.2rem;
+	}
+
+	.tooltip2 .xlabel {
+	  fill: #52524e;
+	}
+
+	.d3-tip.n: after {
+	  margin: -1px 0 0 0;
+	  top: 100%;
+	  left: 0;
+	}
+
+	.tooltipTitle {
+	  line-height: 1;
+	  font-size: 1.3rem;
+	  color: #52524e;
+	  margin-top: 0;
+	  margin-bottom: 4px;
+	}
+
+	.tooltipText {
+	  font-size: 1.3rem;
+	  line-height: 1;
+	  color: #ea920e;
+	  margin-top: 0;
+	  margin-bottom: 4px;
+	}
+
+	.axis {
+	  font: 2px sans-serif;
+	}
+
+	.row .row {
+	  margin: 0;
+	}
+
+	circle: hover {
+	  fill: #106902;
+	  opacity: 1;
+	}
+
+
+	.dot_legend {
+	  color: #2c830a;
+	}
+
+	.usdot {
+	  border-radius: 50%;
+	  width: 10px;
+	  height: 10px;
+	  background-color: #edc421;
+	  color: #edc421;
+	  display: inline-block;
+	}
+
+	.statedot {
+	  border-radius: 50%;
+	  width: 10px;
+	  height: 10px;
+	  background-color: #ea920e;
+	  color: #ea920e;
+	  display: inline-block;
+	}
+
+	.dotplot_title {
+	  width: 300px;
+	  text-align: center;
+	  display: inline-block;
+	}
+
+</style>		
+  </head>
+  <body>
+	<h2>Середня зарплата за регіонами (станом на 2016 рік)</h1>
+	<img src="http://corestone.expert/static/icons/ic-landing-corestone-logo.svg" alt="Corestone" class="Products" style="width:5%;height:5%;position:relative;left:600px;top:80px;">
+	<img src="http://corestone.expert/static/icons/ic-landing-corestone-logo.svg" alt="Corestone" class="Products-Mobile" style="width:10%;height:10%;position:relative;left:300px;top:70px;">
+<div id="map" class="Products"></div>
+<div id="map_m" class="Products-Mobile"></div>
+
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="//d3js.org/queue.v1.min.js"></script>
     <script>
-        var width = 960,
-            height = 580,
-            centered;
 
-        var projection = d3.geo.albers()
-            .center([0.22, 56.40])
-            .rotate([4.4, 0])
-            .parallels([50, 60])
-            .scale(1200 * 25)
-            .translate([width / 2, height / 2]);
+	!function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return i(g,!0);if(f)return f(g,!0);var j=new Error("Cannot find module '"+g+"'");throw j.code="MODULE_NOT_FOUND",j}var k=c[g]={exports:{}};b[g][0].call(k.exports,function(a){var c=b[g][1][a];return e(c?c:a)},k,k.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){var d=a("./legend");b.exports=function(){function a(a){var v=d.d3_calcType(c,t,j,k,o,r),w=a.append("g").attr("class",l+"legendCells"),x=w.selectAll("."+l+"cell").data(v.data),y=x.enter().append("g",".cell").attr("class",l+"cell").style("opacity",1e-6);shapeEnter=y.append(e).attr("class",l+"swatch"),shapes=x.select("g."+l+"cell "+e),d.d3_addEvents(y,u),x.exit().transition().style("opacity",0).remove(),d.d3_drawShapes(e,shapes,g,f,h,b),d.d3_addText(w,y,v.labels,l);var z=x.select("text"),A=shapes[0].map(function(a){return a.getBBox()});m?shapes.attr("class",function(a){return l+"swatch "+v.feature(a)}):"line"==e?shapes.style("stroke",v.feature):shapes.style("fill",v.feature);var B,C,D="start"==q?0:"middle"==q?.5:1;"vertical"===s?(B=function(a,b){return"translate(0, "+b*(A[b].height+i)+")"},C=function(a,b){return"translate("+(A[b].width+A[b].x+p)+","+(A[b].y+A[b].height/2+5)+")"}):"horizontal"===s&&(B=function(a,b){return"translate("+b*(A[b].width+i)+",0)"},C=function(a,b){return"translate("+(A[b].width*D+A[b].x)+","+(A[b].height+A[b].y+p+8)+")"}),d.d3_placement(s,x,B,z,C,q),d.d3_title(a,w,n,l),x.transition().style("opacity",1)}var b,c=d3.scale.linear(),e="rect",f=15,g=15,h=10,i=2,j=[5],k=[],l="",m=!1,n="",o=d3.format(".01f"),p=10,q="middle",r="to",s="vertical",t=!1,u=d3.dispatch("cellover","cellout","cellclick");return a.scale=function(b){return arguments.length?(c=b,a):a},a.cells=function(b){return arguments.length?((b.length>1||b>=2)&&(j=b),a):a},a.shape=function(c,d){return arguments.length?(("rect"==c||"circle"==c||"line"==c||"path"==c&&"string"==typeof d)&&(e=c,b=d),a):a},a.shapeWidth=function(b){return arguments.length?(f=+b,a):a},a.shapeHeight=function(b){return arguments.length?(g=+b,a):a},a.shapeRadius=function(b){return arguments.length?(h=+b,a):a},a.shapePadding=function(b){return arguments.length?(i=+b,a):a},a.labels=function(b){return arguments.length?(k=b,a):a},a.labelAlign=function(b){return arguments.length?(("start"==b||"end"==b||"middle"==b)&&(q=b),a):a},a.labelFormat=function(b){return arguments.length?(o=b,a):a},a.labelOffset=function(b){return arguments.length?(p=+b,a):a},a.labelDelimiter=function(b){return arguments.length?(r=b,a):a},a.useClass=function(b){return arguments.length?((b===!0||b===!1)&&(m=b),a):a},a.orient=function(b){return arguments.length?(b=b.toLowerCase(),("horizontal"==b||"vertical"==b)&&(s=b),a):a},a.ascending=function(b){return arguments.length?(t=!!b,a):a},a.classPrefix=function(b){return arguments.length?(l=b,a):a},a.title=function(b){return arguments.length?(n=b,a):a},d3.rebind(a,u,"on"),a}},{"./legend":2}],2:[function(a,b,c){b.exports={d3_identity:function(a){return a},d3_mergeLabels:function(a,b){if(0===b.length)return a;a=a?a:[];for(var c=b.length;c<a.length;c++)b.push(a[c]);return b},d3_linearLegend:function(a,b,c){var d=[];if(b.length>1)d=b;else for(var e=a.domain(),f=(e[e.length-1]-e[0])/(b-1),g=0;b>g;g++)d.push(e[0]+g*f);var h=d.map(c);return{data:d,labels:h,feature:function(b){return a(b)}}},d3_quantLegend:function(a,b,c){var d=a.range().map(function(d){var e=a.invertExtent(d);b(e[0]),b(e[1]);return b(e[0])+" "+c+" "+b(e[1])});return{data:a.range(),labels:d,feature:this.d3_identity}},d3_ordinalLegend:function(a){return{data:a.domain(),labels:a.domain(),feature:function(b){return a(b)}}},d3_drawShapes:function(a,b,c,d,e,f){"rect"===a?b.attr("height",c).attr("width",d):"circle"===a?b.attr("r",e):"line"===a?b.attr("x1",0).attr("x2",d).attr("y1",0).attr("y2",0):"path"===a&&b.attr("d",f)},d3_addText:function(a,b,c,d){b.append("text").attr("class",d+"label"),a.selectAll("g.cell text").data(c).text(this.d3_identity)},d3_calcType:function(a,b,c,d,e,f){var g=a.ticks?this.d3_linearLegend(a,c,e):a.invertExtent?this.d3_quantLegend(a,e,f):this.d3_ordinalLegend(a);return g.labels=this.d3_mergeLabels(g.labels,d),b&&(g.labels=this.d3_reverse(g.labels),g.data=this.d3_reverse(g.data)),g},d3_reverse:function(a){for(var b=[],c=0,d=a.length;d>c;c++)b[c]=a[d-c-1];return b},d3_placement:function(a,b,c,d,e,f){b.attr("transform",c),d.attr("transform",e),"horizontal"===a&&d.style("text-anchor",f)},d3_addEvents:function(a,b){var c=this;a.on("mouseover.legend",function(a){c.d3_cellOver(b,a,this)}).on("mouseout.legend",function(a){c.d3_cellOut(b,a,this)}).on("click.legend",function(a){c.d3_cellClick(b,a,this)})},d3_cellOver:function(a,b,c){a.cellover.call(c,b)},d3_cellOut:function(a,b,c){a.cellout.call(c,b)},d3_cellClick:function(a,b,c){a.cellclick.call(c,b)},d3_title:function(a,b,c,d){if(""!==c){a.append("text").attr("class",d+"legendTitle").text(c);var e=a.select("."+d+"legendTitle").map(function(a){return a[0].getBBox().height})[0],f=-b.map(function(a){return a[0].getBBox().x})[0];b.attr("transform","translate("+f+","+(e+10)+")")}}}},{}],3:[function(a,b,c){var d=a("./legend");b.exports=function(){function a(a){var s=d.d3_calcType(c,q,h,i,l,o),t=a.append("g").attr("class",j+"legendCells"),u=t.selectAll("."+j+"cell").data(s.data),v=u.enter().append("g",".cell").attr("class",j+"cell").style("opacity",1e-6);shapeEnter=v.append(e).attr("class",j+"swatch"),shapes=u.select("g."+j+"cell "+e),d.d3_addEvents(v,r),u.exit().transition().style("opacity",0).remove(),"line"===e?(d.d3_drawShapes(e,shapes,0,f),shapes.attr("stroke-width",s.feature)):d.d3_drawShapes(e,shapes,s.feature,s.feature,s.feature,b),d.d3_addText(t,v,s.labels,j);var w,x,y=u.select("text"),z=shapes[0].map(function(a,b){var d=a.getBBox(),f=c(s.data[b]);return"line"===e&&"horizontal"===p?d.height=d.height+f:"line"===e&&"vertical"===p&&(d.width=d.width),d}),A=d3.max(z,function(a){return a.height+a.y}),B=d3.max(z,function(a){return a.width+a.x}),C="start"==n?0:"middle"==n?.5:1;"vertical"===p?(w=function(a,b){var c=d3.sum(z.slice(0,b+1),function(a){return a.height});return"translate(0, "+(c+b*g)+")"},x=function(a,b){return"translate("+(B+m)+","+(z[b].y+z[b].height/2+5)+")"}):"horizontal"===p&&(w=function(a,b){var c=d3.sum(z.slice(0,b+1),function(a){return a.width});return"translate("+(c+b*g)+",0)"},x=function(a,b){return"translate("+(z[b].width*C+z[b].x)+","+(A+m)+")"}),d.d3_placement(p,u,w,y,x,n),d.d3_title(a,t,k,j),u.transition().style("opacity",1)}var b,c=d3.scale.linear(),e="rect",f=15,g=2,h=[5],i=[],j="",k="",l=d3.format(".01f"),m=10,n="middle",o="to",p="vertical",q=!1,r=d3.dispatch("cellover","cellout","cellclick");return a.scale=function(b){return arguments.length?(c=b,a):a},a.cells=function(b){return arguments.length?((b.length>1||b>=2)&&(h=b),a):a},a.shape=function(c,d){return arguments.length?(("rect"==c||"circle"==c||"line"==c)&&(e=c,b=d),a):a},a.shapeWidth=function(b){return arguments.length?(f=+b,a):a},a.shapePadding=function(b){return arguments.length?(g=+b,a):a},a.labels=function(b){return arguments.length?(i=b,a):a},a.labelAlign=function(b){return arguments.length?(("start"==b||"end"==b||"middle"==b)&&(n=b),a):a},a.labelFormat=function(b){return arguments.length?(l=b,a):a},a.labelOffset=function(b){return arguments.length?(m=+b,a):a},a.labelDelimiter=function(b){return arguments.length?(o=b,a):a},a.orient=function(b){return arguments.length?(b=b.toLowerCase(),("horizontal"==b||"vertical"==b)&&(p=b),a):a},a.ascending=function(b){return arguments.length?(q=!!b,a):a},a.classPrefix=function(b){return arguments.length?(j=b,a):a},a.title=function(b){return arguments.length?(k=b,a):a},d3.rebind(a,r,"on"),a}},{"./legend":2}],4:[function(a,b,c){var d=a("./legend");b.exports=function(){function a(a){var t=d.d3_calcType(b,r,i,j,m,p),u=a.append("g").attr("class",k+"legendCells"),v=u.selectAll("."+k+"cell").data(t.data),w=v.enter().append("g",".cell").attr("class",k+"cell").style("opacity",1e-6);shapeEnter=w.append(c).attr("class",k+"swatch"),shapes=v.select("g."+k+"cell "+c),d.d3_addEvents(w,s),v.exit().transition().style("opacity",0).remove(),d.d3_drawShapes(c,shapes,f,e,g,t.feature),d.d3_addText(u,w,t.labels,k);var x,y,z=v.select("text"),A=shapes[0].map(function(a){return a.getBBox()}),B=d3.max(A,function(a){return a.height}),C=d3.max(A,function(a){return a.width}),D="start"==n?0:"middle"==n?.5:1;"vertical"===q?(x=function(a,b){return"translate(0, "+b*(B+h)+")"},y=function(a,b){return"translate("+(C+o)+","+(A[b].y+A[b].height/2+5)+")"}):"horizontal"===q&&(x=function(a,b){return"translate("+b*(C+h)+",0)"},y=function(a,b){return"translate("+(A[b].width*D+A[b].x)+","+(B+o)+")"}),d.d3_placement(q,v,x,z,y,n),d.d3_title(a,u,l,k),v.transition().style("opacity",1)}var b=d3.scale.linear(),c="path",e=15,f=15,g=10,h=5,i=[5],j=[],k="",l="",m=d3.format(".01f"),n="middle",o=10,p="to",q="vertical",r=!1,s=d3.dispatch("cellover","cellout","cellclick");return a.scale=function(c){return arguments.length?(b=c,a):a},a.cells=function(b){return arguments.length?((b.length>1||b>=2)&&(i=b),a):a},a.shapePadding=function(b){return arguments.length?(h=+b,a):a},a.labels=function(b){return arguments.length?(j=b,a):a},a.labelAlign=function(b){return arguments.length?(("start"==b||"end"==b||"middle"==b)&&(n=b),a):a},a.labelFormat=function(b){return arguments.length?(m=b,a):a},a.labelOffset=function(b){return arguments.length?(o=+b,a):a},a.labelDelimiter=function(b){return arguments.length?(p=b,a):a},a.orient=function(b){return arguments.length?(b=b.toLowerCase(),("horizontal"==b||"vertical"==b)&&(q=b),a):a},a.ascending=function(b){return arguments.length?(r=!!b,a):a},a.classPrefix=function(b){return arguments.length?(k=b,a):a},a.title=function(b){return arguments.length?(l=b,a):a},d3.rebind(a,s,"on"),a}},{"./legend":2}],5:[function(a,b,c){d3.legend={color:a("./color"),size:a("./size"),symbol:a("./symbol")}},{"./color":1,"./size":3,"./symbol":4}]},{},[5]);
 
-        var path = d3.geo.path()
-            .projection(projection);
 
-        var svg = d3.select("body")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g");
+</script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
-        var rateByOverall = {};
-        var rateByIncome = {};
-        var rateByEmployment = {};
-        var rateByHealth = {};
-        var rateByEducation = {};
-        var rateByHousing = {};
-        var rateByCrime = {};
+    <script>
 
-        // wrapper function to enable switching map and legend content
-        function updateChoro(choro) {
+	(function(){		
 
-            // function to read in data from csv file
-            d3.csv("S12000024_deprivation_ranks_2012.csv", function(error, data) {
+	var width = 700;		
+	var height = 500;		
+	var mapScale = 4;		
 
-                // set the colour scale of the choropleth map
-                var cscale,
-                    domain;
+	var svg2 = d3.select('#map').append('svg')		
+	    .attr('width', width)		
+	    .attr('height', height);		
 
-                if (choro == "rateByOverall") {
-                    choro = rateByOverall;
-                    cscale = colorbrewer.YlGnBu[9]
-                    domain = 'Overall '
-                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
-                }
-                if (choro == "rateByIncome") {
-                    choro = rateByIncome;
-                    cscale = colorbrewer.Oranges[9]
-                    domain = 'Income '
-                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
-                }
-                if (choro == "rateByEmployment") {
-                    choro = rateByEmployment;
-                    cscale = colorbrewer.Reds[9]
-                    domain = 'Employment '
-                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
-                }
-                if (choro == "rateByHealth") {
-                    choro = rateByHealth;
-                    cscale = colorbrewer.Greens[9]
-                    domain = 'Health '
-                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
-                }
-                if (choro == "rateByEducation") {
-                    choro = rateByEducation;
-                    cscale = colorbrewer.Purples[9]
-                    domain = 'Education '
-                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
-                }
-                if (choro == "rateByHousing") {
-                    choro = rateByHousing;
-                    cscale = colorbrewer.Blues[9]
-                    domain = 'Housing '
-                    document.getElementById("legend").innerHTML="<span class = legendTitle>" + domain + "deprivation</span>";
-                }
-                if (choro == "rateByCrime") {
-                    choro = rateByCrime;
-                    cscale = colorbrewer.Reds[9]
-                    domain = 'Crime '
-                    document.getElementById("legend").innerHTML = "<span class = legendTitle>" + domain + "deprivation</span>";
-                }
+	var projection = d3.geo.albers()		
+	    .center([0, 48.5])		
+	    .rotate([-31.5, 0])		
+	    .parallels([44, 51])		
+	    .scale(width * mapScale)		
+	    .translate([width / 2, height / 2]);
 
-                var color = d3.scale.quantize()
-                    .domain([6500, 1])
-                    .range(cscale);
 
-                data.forEach(function (d) {
-                    rateByOverall[d.dz_label] = +d.overall_rank;
-                    rateByIncome[d.dz_label] = +d.income_deprivation_rank;
-                    rateByEmployment[d.dz_label] = +d.employment_deprivation_rank;
-                    rateByHealth[d.dz_label] = +d.health_deprivation_rank;
-                    rateByEducation[d.dz_label] = +d.education_deprivation_rank;
-                    rateByHousing[d.dz_label] = +d.housing_deprivation_rank;
-                    rateByCrime[d.dz_label] = +d.crime_deprivation_rank;
-                });
+	var path = d3.geo.path()		
+	    .projection(projection);		
 
-                // function to read in data from json file
-                d3.json("S12000024_topo.json", function(error, S12000024_topo) {
+	var colorScale = d3.scale.linear().range(["#ffffe5", "#fe9929"]).interpolate(d3.interpolateLab);		
 
-                    // build the tool tip information boxes
-                    var tip = d3.tip()
-                        .attr('class', 'd3-tip')
-                        .offset([0, -1])
-                        .direction('w')
-                        .html(function (d) {
+	var countryById = d3.map();		
 
-                            if (choro == rateByOverall) {
-                                var t = d.properties.overall_rank;
-                            }
-                            if (choro == rateByIncome) {
-                                var t = d.properties.income_rank;
-                            }
-                            if (choro == rateByEmployment) {
-                                var t = d.properties.employment_rank;
-                            }
-                            if (choro == rateByHealth) {
-                                var t = d.properties.health_rank;
-                            }
-                            if (choro == rateByEducation) {
-                                var t = d.properties.education_rank;
-                            }
-                            if (choro == rateByHousing) {
-                                var t = d.properties.housing_rank;
-                            }
-                            if (choro == rateByCrime) {
-                                var t = d.properties.crime_rank;
-                            }
+	var tooltip = d3.select("body")		
+	  .append("div")		
+	  .attr("class", "tooltip1");		
 
-                            return "<span class ='toolTipHead'><b>Data Zone: " + d.id + "</b><br/>" +
-                            "Intermediate Geography: " + d.properties.int_geog + "<br/>" +
-                            "SIMD Year: 2012<br/>" +
-                            "<span class ='toolTipRank'>" + domain + "SIMD Rank: " + t + "</span><br/>"
-                        })
+	queue()		
+	    .defer(d3.json, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/Ukraine.json")		
+	    .defer(d3.csv, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/plu.csv", typeAndSet) 		
+	    .await(loaded);		
 
-                    svg.call(tip);
-    
-                    d3.select("g")
-                        .selectAll("path")
-                        .remove();
-    
-                    // build the choropleth map
-                    var appending = svg.selectAll("g")
-                        .attr("class", "S12000024_geo")
-                        .data(topojson.feature(S12000024_topo, S12000024_topo.objects.S12000024_geo).features);
-    
-                        // add new elements
-                        appending.enter().append("path");
-    
-                        // update existing elements
-                        appending.style("fill",
-                        function (d) {
-                            return color(choro[d.id]);
-                        })
-                        .style("stroke", "white")
-                        .style("stroke-width", 0.1)
-                        .attr("d", path)
-                        .on("click", clicked)
-    
-                        // rollover functionality to display tool tips
-                        .on("mouseover", function (d) {
-                            tip.show(d)
-                            d3.select(this)
-                                .transition().duration(200)
-                                .style("fill", "red");
-                        })
-                        .on("mouseout", function () {
-                            tip.hide()
-                            d3.select(this)
-                                .transition().duration(200)
-                                .style("fill",
-                                function (d) {
-                                    return color(choro[d.id]);
-                                });
-                        })
-    
-                    d3.select('#legend')
-                        .selectAll('ul')
-                        .remove();
-    
-                    // build the map legend
-                    var legend = d3.select('#legend')
-                        .append('ul')
-                        .attr('class', 'list-inline');
-    
-                    var keys = legend.selectAll('li.key')
-                        .data(color.range());
+	function typeAndSet(d) {		
+	    d.plu = +d.plu;		
+	    countryById.set(d.name, d);		
+	    return d;		
+	}		
 
-                    var legend_items = ["Low", "", "", "", "", "", "", "", "High"];
-    
-                    keys.enter().append('li')
-                        .attr('class', 'key')
-                        .style('border-top-color', String)
-                        .text(function (d, i) {
-                            return legend_items[i];
-                        });
-                })
-            })
-        }
+	function getColor(d) {		
+	    var dataRow = countryById.get(d.properties.name);		
+	    if (dataRow) {		
+	        return colorScale(dataRow.plu);		
+	    } else {		
+	        return "#ccc";		
+	    }		
+	}		
 
-        // zoom functionality written by the awesome Mike Bostock
-        function clicked(d) {
-            var x, y, k;
-    
-            if (d && centered !== d) {
-                var centroid = path.centroid(d);
-                x = centroid[0];
-                y = centroid[1];
-                k = 4;
-                centered = d;
-            } else {
-                x = width / 2;
-                y = height / 2;
-                k = 1;
-                centered = null;
-            }
-    
-            svg.selectAll("path")
-                .classed("active", centered && function(d) { return d === centered; });
-    
-            svg.transition()
-                .duration(750)
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-                .style("stroke-width", 1.5 / k + "px");
-        }
-    
-        // generate initial map using overall deprivation rank data
-        updateChoro('rateByOverall');
-    
-        // handle on click event to switch between maps
-        d3.selectAll(".m")
-            .on("click", function() {
-                var choro = this.getAttribute("value");
-                updateChoro(choro);
-            });
-    
-    </script>
-    <div id="legend"></div>
-</body>
+	function getContent(d) {		
+	  var content;		
+	  var dataRow = countryById.get(d.properties.name);		
+	     if (dataRow) {		
+	         content = "<p class='tooltipTitle'>" + dataRow.name + "</p><p>Середня зарплата станом на 2016 рік: <span class='tooltipText'> " + dataRow.plu + "</span></p>";		
+	     } else {		
+	         content = d.properties.name + ": Дані відсутні";		
+	     }		
+	     window.setTimeout(function(){		
+	       update_state_tooltip(d.properties.name)		
+	     });		
+	     return content + "<div><div class='usdot'></div> Україна <br> <div class='statedot'></div> " + d.properties.name+ "</div><span class='dotplot_title'>Динаміка росту зарплати</span><div id='tooltip_graphs'></div>";		
+	}		
+
+	function loaded(error, Ukraine, plu) {		
+
+	    colorScale.domain([3000,9000]);		
+
+	    var states = topojson.feature(Ukraine, Ukraine.objects.ukrainer).features;		
+
+	    svg2.selectAll('path.states')		
+	        .data(states)		
+	        .enter()		
+	        .append('path')		
+	        .attr("class", function(d){		
+
+	          var replacedStrings = d.properties.name.replace(" ","_");		
+	          console.log(replacedStrings);		
+	          return "states " + replacedStrings;		
+	        })		
+	        .attr('d', path)		
+	        .attr('fill', function(d,i) {		
+	            return getColor(d);		
+	        })		
+	        .on('mouseout.focus', function(d){		
+	          var replacedStrings = d.properties.name.replace(" ","_");		
+	          d3.selectAll(".wrapperMapMultiples ." + replacedStrings).classed("hoverFocus",false);		
+	        })		
+	        .on('mouseover.focus', function(d){		
+	          var replacedStrings = d.properties.name.replace(" ","_");		
+	          d3.selectAll(".wrapperMapMultiples ." + replacedStrings).classed("hoverFocus",true);		
+	        })		
+	        .call(d3.helper.tooltip(		
+	         function(d, i){		
+	           return getContent(d);		
+	         }		
+	         )); 		
+
+	    var linear = colorScale;		
+	    svg2.append("g")		
+	      .attr("class", "legendLinear")		
+	      .attr("transform", "translate(100,300)");		
+
+	    var legendLinear = d3.legend.color()		
+	      .shapeWidth(30)		
+	      .orient('horizontal')		
+	      .scale(linear);		
+
+	    svg2.select(".legendLinear")		
+	      .call(legendLinear);		
+	}		
+	})();
+
+ </script>
+
+	<script>
+	
+	(function(){		
+
+	var width = 350;		
+	var height = 300;		
+	var mapScale = 4;		
+
+	var svg2 = d3.select('#map_m').append('svg')		
+	    .attr('width', width)		
+	    .attr('height', height);		
+
+	var projection = d3.geo.albers()		
+	    .center([0, 48.5])		
+	    .rotate([-31.5, 0])		
+	    .parallels([44, 51])		
+	    .scale(width * mapScale)		
+	    .translate([width / 2, height / 2]);
+
+
+	var path = d3.geo.path()		
+	    .projection(projection);		
+
+	var colorScale = d3.scale.linear().range(["#ffffe5", "#fe9929"]).interpolate(d3.interpolateLab);		
+
+	var countryById = d3.map();		
+
+	var tooltip = d3.select("body")		
+	  .append("div")		
+	  .attr("class", "tooltip1");		
+
+	queue()		
+	    .defer(d3.json, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/Ukraine.json")		
+	    .defer(d3.csv, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/plu.csv", typeAndSet) 		
+	    .await(loaded);		
+
+	function typeAndSet(d) {		
+	    d.plu = +d.plu;		
+	    countryById.set(d.name, d);		
+	    return d;		
+	}		
+
+	function getColor(d) {		
+	    var dataRow = countryById.get(d.properties.name);		
+	    if (dataRow) {		
+	        return colorScale(dataRow.plu);		
+	    } else {		
+	        return "#ccc";		
+	    }		
+	}		
+
+	function getContent(d) {		
+	  var content;		
+	  var dataRow = countryById.get(d.properties.name);		
+	     if (dataRow) {		
+	         content = "<p class='tooltipTitle'>" + dataRow.name + "</p><p>Середня зарплата станом на 2016 рік: <span class='tooltipText'> " + dataRow.plu + "</span></p>";		
+	     } else {		
+	         content = d.properties.name + ": Дані відсутні";		
+	     }		
+	     window.setTimeout(function(){		
+	       update_state_tooltip(d.properties.name)		
+	     });		
+	     return content + "<div><div class='usdot'></div> Україна <br> <div class='statedot'></div> " + d.properties.name+ "</div><span class='dotplot_title'>Динаміка росту зарплати</span><div id='tooltip_graphs'></div>";		
+	}		
+
+	function loaded(error, Ukraine, plu) {		
+
+	    colorScale.domain([3000,9000]);		
+
+	    var states = topojson.feature(Ukraine, Ukraine.objects.ukrainer).features;		
+
+	    svg2.selectAll('path.states')		
+	        .data(states)		
+	        .enter()		
+	        .append('path')		
+	        .attr("class", function(d){		
+
+	          var replacedStrings = d.properties.name.replace(" ","_");		
+	          console.log(replacedStrings);		
+	          return "states " + replacedStrings;		
+	        })		
+	        .attr('d', path)		
+	        .attr('fill', function(d,i) {		
+	            return getColor(d);		
+	        })		
+	        .on('mouseout.focus', function(d){		
+	          var replacedStrings = d.properties.name.replace(" ","_");		
+	          d3.selectAll(".wrapperMapMultiples ." + replacedStrings).classed("hoverFocus",false);		
+	        })		
+	        .on('mouseover.focus', function(d){		
+	          var replacedStrings = d.properties.name.replace(" ","_");		
+	          d3.selectAll(".wrapperMapMultiples ." + replacedStrings).classed("hoverFocus",true);		
+	        })		
+	        .call(d3.helper.tooltip(		
+	         function(d, i){		
+	           return getContent(d);		
+	         }		
+	         )); 		
+
+	    var linear = colorScale;		
+	    svg2.append("g")		
+	      .attr("class", "legendLinear")		
+	      .attr("transform", "translate(0,250)");		
+
+	    var legendLinear = d3.legend.color()		
+	      .shapeWidth(30)		
+	      .orient('horizontal')		
+	      .scale(linear);		
+
+	    svg2.select(".legendLinear")		
+	      .call(legendLinear);		
+	}		
+	})();	
+	
+	</script>
+	
+    <script>
+
+!function(n,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):n.queue=t()}(this,function(){"use strict";function n(){}function t(t){function r(){if(!c)try{e()}catch(n){a[w+s-1]&&i(n)}}function e(){for(;c=h&&t>s;){var n=w+s,r=a[n],o=r.length-1,e=r[o];r[o]=f(n),--h,++s,r=e.apply(null,r),a[n]&&(a[n]=r||u)}}function f(n){return function(t,o){a[n]&&(--s,++w,a[n]=null,null==d&&(null!=t?i(t):(p[n]=o,h?r():s||y(d,p))))}}function i(n){var t,r=a.length;for(d=n,p=void 0,h=NaN;--r>=0;)if((t=a[r])&&(a[r]=null,t.abort))try{t.abort()}catch(n){}s=NaN,y(d,p)}if(!(t>=1))throw new Error;var l,c,a=[],p=[],h=0,s=0,w=0,d=null,y=n;return l={defer:function(t){if("function"!=typeof t||y!==n)throw new Error;if(null!=d)return l;var u=o.call(arguments,1);return u.push(t),++h,a.push(u),r(),l},abort:function(){return null==d&&i(new Error("abort")),l},await:function(t){if("function"!=typeof t||y!==n)throw new Error;return y=function(n,r){t.apply(null,[n].concat(r))},s||y(d,p),l},awaitAll:function(t){if("function"!=typeof t||y!==n)throw new Error;return y=t,s||y(d,p),l}}}function r(n){return t(arguments.length?+n:1/0)}var o=[].slice,u={};return r.version="1.2.3",r});
+
+</script>
+
+    <script>
+
+	d3.helper = {};				
+
+	d3.helper.tooltip = function(accessor){				
+	    return function(selection){				
+	        var tooltipDiv;				
+	        var lastData;				
+	        var bodyNode = d3.select('body').node();				
+	        selection.on("mouseover", function(d, i){					
+	            d3.select('body').selectAll('div.tooltip2').remove();					
+	            tooltipDiv = d3.select('body').append('div').attr('class', 'tooltip2');		      		
+	            var absoluteMousePos = d3.mouse(bodyNode);				
+	            tooltipDiv.style('left', (absoluteMousePos[0] + 10)+'px')				
+	                .style('top', (absoluteMousePos[1] - 15)+'px')				
+	                .style('position', 'absolute')				
+	                .style('z-index', 1001);				
+	            var tooltipText = accessor(d, i) || '';				
+	            tooltipDiv.html(tooltipText);					
+	        })				
+	        .on('mousemove', function(d, i) {				
+	            var absoluteMousePos = d3.mouse(bodyNode);				
+	            tooltipDiv.style('left', (absoluteMousePos[0] + 10)+'px')				
+	                .style('top', (absoluteMousePos[1] - 15)+'px');					
+	        })				
+	        .on("mouseout", function(d, i){				
+	            tooltipDiv.remove();				
+	        });				
+
+	    };				
+	};
+
+</script>
+    <script>
+	queue()		
+	    .defer(d3.csv, "https://raw.githubusercontent.com/RomanKyrychenko/d3/master/births_by_race.csv")				
+	    .await(birth_loaded);		
+
+	var race_data;				
+
+	function birth_loaded(error, loaded_race_data){		
+	  race_data = loaded_race_data;				
+	}		
+
+	function update_state_tooltip(name){		
+
+	var fullwidth = 250,		
+	   fullheight = 200;		
+
+	var margin = {top: 0, right: 5, bottom: 20, left: 50};		
+
+	var width = fullwidth - margin.left - margin.right,		
+	  height = fullheight- margin.top - margin.bottom;		
+
+	var widthScale = d3.scale.linear()		
+	          .rangeRound([width,0]);		
+
+	var heightScale = d3.scale.linear()		
+	          .rangeRound([0,height]);	
+
+	var xAxis = d3.svg.axis()		
+	        .scale(widthScale)		
+	        .orient("bottom").ticks(5).tickFormat(d3.format("d"));		
+
+	var yAxis = d3.svg.axis()		
+	        .scale(heightScale)		
+	        .orient("left").ticks(5);		
+
+	var svg = d3.select("#tooltip_graphs").selectAll("svg")		
+	  .data([race_data])		
+	  .enter()		
+	  .append("svg:svg")		
+	  .attr("width", fullwidth)		
+	  .attr("height", fullheight)		
+	  .append("g")		
+	  .each(function(d,i){		
+	    var svg = d3.select(this)		
+	      .append("g");		
+
+	      console.log(d3.max(d,function (d){		
+	        return +d["Україна"];})		
+	      );		
+	      widthScale.domain([2016,1995]);		
+
+	      heightScale.domain([9000,0],);						
+
+	      var dotsState = svg.selectAll("circle.state")		
+	          .data(d)		
+	          .enter()		
+	          .append("circle");		
+
+	      dotsState		
+	        .attr("class", "name")		
+	        .attr("cx", function(d) {
+		   return margin.left + widthScale(+d.sfera);	
+
+	        })		
+	        .attr("r", 4)		
+	        .attr("cy", function(d) {	
+		return heightScale(+d[name]);					
+
+	        })		
+	        .append("title")		
+	        .text(function(d) {		
+	          return widthScale(d.sfera) + " in: " + d[name];		
+	        });		
+
+
+	      var dotsUS = svg.selectAll("circle.US")		
+	          .data(d)		
+	          .enter()		
+	          .append("circle");		
+
+	      dotsUS		
+	        .attr("class", "Україна")		
+	        .attr("cx", function(d) {
+		  return margin.left + widthScale(d.sfera);			
+	        })		
+	        .attr("r", 4)		
+	        .attr("cy", function(d) {		
+	          return heightScale(+d["Україна"]);	
+	        })		
+	        .append("title")		
+	        .text(function(d) {		
+	          return widthScale(d.sfera) + " in: " + d["Україна"];		
+	        });	
+
+	      svg.append("g")		
+	        .attr("class", "x axis")		
+	        .attr("transform", "translate(" + margin.left + "," + height + ")")		
+	        .call(xAxis);		
+
+	      svg.append("g")		
+	        .attr("class", "y axis")		
+	        .attr("transform", "translate(" + margin.left + ",0)")		
+	        .call(yAxis);		
+
+	      svg.append("text")		
+	        .attr("class", "xlabel")		
+	        .attr("transform", "translate(" + (margin.left + width) + " ," +		
+	              (height + margin.bottom) + ")")		
+	        .style("text-anchor", "middle")		
+	        .attr("dy", "12")		
+	        .text("Зарплата в грн");		
+
+	      var allYAxisLabels = d3.selectAll("g.y.axis g.tick text")[0];		
+	      d3.select(allYAxisLabels[5]).style("font-weight", "bold");		
+	  });		
+	}
+
+</script>
+
+
+
+  </body>
 </html>
